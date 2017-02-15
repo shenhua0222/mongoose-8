@@ -22,11 +22,17 @@ mongoose.connect('mongodb://localhost/todo',function(err){
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
-var Task = new Schema({
+var TaskSchema = new Schema({
 	task:String
 });
 
-var Task = mongoose.model('task',Task);
+var Task = mongoose.model('Task', TaskSchema);
+
+// 创建了实例之后一定要保存，否则在数据库中查找不到
+// var test1 = new Task({task:'test1'});
+// test1.save(function(err) {
+// 	if(err) return handleError(err);
+// })
 
 
 
@@ -49,7 +55,12 @@ app.get('/about',function(req,res){
 	res.send('hello');
 });
 app.get('/tasks',function(req,res){
-	Task.find({},function(err,docs){
+	// console.log(req);
+	Task.find({}, function(err,docs){
+		// for循环测试docs到底是什么；
+		// for(var i=0; i<docs.length; i++) {
+		// 	console.log(docs[i]);
+		// } 
 		res.render('tasks/index',{
 			title:'Todos index view',
 			docs:docs
@@ -64,7 +75,8 @@ app.get('/tasks/new',function(req,res){
 });
 
 app.post('/tasks',function(req,res){
-	var task = new Task(req.body.task);
+	// console.log(req.body)
+	var task = new Task(req.body);
 	task.save(function(err){
 		if(!err) {
 			res.redirect('/tasks');
@@ -83,10 +95,9 @@ app.get('/tasks/:id/edit',function(req,res){
 	});
 });
 
-app.put('/tasks/:id',function(req,res){
+app.post('/tasks/:id',function(req,res){
 	Task.findById(req.params.id,function(err,doc){
-		doc.updated_at = new Date();
-		doc.task = req.body.task.task;
+		doc.task = req.body.task;
 		doc.save(function(err) {
 			if(!err){
 				res.redirect('/tasks');

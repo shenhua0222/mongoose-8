@@ -12,15 +12,17 @@ block content
         th Task
         th &nbsp;
         th &nbsp;
-          each task in docs
+          each Task in docs
             tr
-              td #{task.task}
+              td #{Task.task}
               td
-                a.btn.btn-default(href='/tasks/#{task.id}/edit') Edit
+                a.btn.btn-default(href='/tasks/#{Task.id}/edit') Edit
               td
-                form(method='post', action='/tasks/' + task.id)
+                form(method='post', action='/tasks/' + Task.id)
                   input(name='_method', value='DELETE', type='hidden')
                   button.btn.btn-danger(type='submit') Delete
+      tr
+        td #{docs.length}
                  
                  
 
